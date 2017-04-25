@@ -12,8 +12,8 @@ pipeline {
   }
   environment {
     //these will be used throughout the Pipeline
-    DOCKER_HUB_USER = 'beedemo'
-    DOCKER_CREDENTIAL_ID = 'docker-hub-beedemo'
+    DOCKER_HUB_USER = 'msaxbury'
+    DOCKER_CREDENTIAL_ID = 'docker-hub-msaxbury'
     //will shorten sh step for frist two stages, but require stage level variables to override
     COMPOSE_FILE = 'docker-compose-test.yml'
   }
@@ -90,6 +90,9 @@ pipeline {
   //the post section allows us to greatly reduce the need for try/catch blocks
   //with Scripted Pipeline we would have had to put a try catch around the entire script
   post {
+    always [
+      slackSend(color: "good", message: "$[env.JOB_NAME] completed successfully, details at $[env.RUN_DISPLAY_URL]")
+      }
     always {
       sh "docker-compose -f docker-compose-test-local.yml down"
     }
